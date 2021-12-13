@@ -4,7 +4,7 @@
 
 void MultiClientChat::onClientConnectiFromOnServer(int clientSocket) 
 {
-	std::string welcomeMSGFromServer = "Добро пожаловать на сервер\\чат рудлетку!\n";
+	std::string welcomeMSGFromServer = "Р”РѕР±СЂРѕ РїРѕР¶Р°Р»РѕРІР°С‚СЊ РЅР° СЃРµСЂРІРµСЂ\\С‡Р°С‚ СЂСѓРґР»РµС‚РєСѓ!\n";
 	sendMSGToClient(clientSocket, welcomeMSGFromServer.c_str(), welcomeMSGFromServer.size() + 1);
 
 }

@@ -1,16 +1,16 @@
-#include "MultiClientListenerInterface.h"
+#include "WebServerInterface.h"
 
-//using namespace std;
+
 
 void main() 
 {
 	setlocale(LC_ALL, "Russian");	
-	MultiClientChat temp("0.0.0.0", 30000);
-	if (temp.initializeListenerSocket() != 0) 
+	WebServer objWebServer("0.0.0.0", 8080);
+	if (objWebServer.initializeListenerSocket() != 0)
 	{
-		return;
+		return; 
 	}
-	temp.runListenerSocket();
+	objWebServer.runListenerSocket();
 
 	system("pause");
 

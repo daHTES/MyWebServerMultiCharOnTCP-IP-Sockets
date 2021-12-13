@@ -1,7 +1,6 @@
 #include <iostream>
 #include <WS2tcpip.h>
-#include <string>
-#include <sstream>
+
 
 #pragma comment (lib, "ws2_32.lib")
 
@@ -21,8 +20,8 @@ protected:
 	void notificationToClientServer(int sendingClient, const char* msg, int length);
 
 private:
-	const char* s_ipAddressServer; // IP адрес сервера
-	int s_ServerPort; // порт сервера
-	int s_ServerSocket; // FD для прослушивания сокета
+	const char* s_ipAddressServer; // IP Р°РґСЂРµСЃ СЃРµСЂРІРµСЂР°
+	int s_ServerPort; // РїРѕСЂС‚ СЃРµСЂРІРµСЂР°
+	int s_ServerSocket; // FD РґР»СЏ РїСЂРѕСЃР»СѓС€РёРІР°РЅРёСЏ СЃРѕРєРµС‚Р°
 	fd_set s_ServerMain;
 };

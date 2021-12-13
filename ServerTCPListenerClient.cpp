@@ -1,18 +1,21 @@
 #include "ServerTCPListenerInterface.h"
+#include <iostream>
+#include <string>
+#include <sstream>
 
 int ServerTCPListenerInterFace::initializeListenerSocket() 
 {
 	WSADATA serverWSData;
 	WORD versionData = MAKEWORD(2, 2);
 	int serverDataStartUp = WSAStartup(versionData, &serverWSData);
-	// Проверяем чек валид на инициализацию
+	// РџСЂРѕРІРµСЂСЏРµРј С‡РµРє РІР°Р»РёРґ РЅР° РёРЅРёС†РёР°Р»РёР·Р°С†РёСЋ
 	if (serverDataStartUp != 0)
 	{
 		return serverDataStartUp;
 	}
-	// Создаем наш сокет 
+	// РЎРѕР·РґР°РµРј РЅР°С€ СЃРѕРєРµС‚ 
 	s_ServerSocket = socket(AF_INET, SOCK_STREAM, 0);
-	// Проверяем чек валид на создание сокета
+	// РџСЂРѕРІРµСЂСЏРµРј С‡РµРє РІР°Р»РёРґ РЅР° СЃРѕР·РґР°РЅРёРµ СЃРѕРєРµС‚Р°
 	if (s_ServerSocket == INVALID_SOCKET)
 	{
 		return WSAGetLastError();
@@ -45,9 +48,9 @@ int ServerTCPListenerInterFace::runListenerSocket()
 	while (runningServer)
 	{
 		fd_set copyMain = s_ServerMain;
-		// переменная для хранения и просмотра тех, кто к нам подключился
+		// РїРµСЂРµРјРµРЅРЅР°СЏ РґР»СЏ С…СЂР°РЅРµРЅРёСЏ Рё РїСЂРѕСЃРјРѕС‚СЂР° С‚РµС…, РєС‚Рѕ Рє РЅР°Рј РїРѕРґРєР»СЋС‡РёР»СЃСЏ
 		int countOfConnectionsSocker = select(0, &copyMain, nullptr, nullptr, nullptr);
-		// перебираем все их в цикле
+		// РїРµСЂРµР±РёСЂР°РµРј РІСЃРµ РёС… РІ С†РёРєР»Рµ
 		for (int i = 0; i < countOfConnectionsSocker; i++)
 		{
 			SOCKET newSock = copyMain.fd_array[i];
@@ -65,7 +68,7 @@ int ServerTCPListenerInterFace::runListenerSocket()
 				int byteIn = recv(newSock, buffer, 6000, 0);
 				if (byteIn <= 0)
 				{
-					// убираем клиента из очереди
+					// СѓР±РёСЂР°РµРј РєР»РёРµРЅС‚Р° РёР· РѕС‡РµСЂРµРґРё
 					onClientDisconnectionFromServer(newSock);
 					closesocket(newSock);
 					FD_CLR(newSock, &s_ServerMain);
@@ -73,10 +76,10 @@ int ServerTCPListenerInterFace::runListenerSocket()
 				else
 				{
 					onMSGReceived(newSock, buffer, byteIn);
-					//if (buffer[0] == '\\') // команда на закрываение сервера
+					//if (buffer[0] == '\\') // РєРѕРјР°РЅРґР° РЅР° Р·Р°РєСЂС‹РІР°РµРЅРёРµ СЃРµСЂРІРµСЂР°
 					{
 						/*string commandLine = string(buffer, byteIn);
-						if (commandLine == "\\quit") // если команда выхода
+						if (commandLine == "\\quit") // РµСЃР»Рё РєРѕРјР°РЅРґР° РІС‹С…РѕРґР°
 						{
 							runningServer = false;
 							break;
@@ -101,15 +104,15 @@ int ServerTCPListenerInterFace::runListenerSocket()
 		}
 
 	}
-	// удаляем сокет из набора дескрипторов и закріваем порт прослушки 
+	// СѓРґР°Р»СЏРµРј СЃРѕРєРµС‚ РёР· РЅР°Р±РѕСЂР° РґРµСЃРєСЂРёРїС‚РѕСЂРѕРІ Рё Р·Р°РєСЂС–РІР°РµРј РїРѕСЂС‚ РїСЂРѕСЃР»СѓС€РєРё 
 	FD_CLR(s_ServerSocket, &s_ServerMain);
 	closesocket(s_ServerSocket);
 
-	// Смс для клиентов о закрытие сервера 
-	//string goodByeMSG = "Сервер ложиться спать!\n";
+	// РЎРјСЃ РґР»СЏ РєР»РёРµРЅС‚РѕРІ Рѕ Р·Р°РєСЂС‹С‚РёРµ СЃРµСЂРІРµСЂР° 
+	//string goodByeMSG = "РЎРµСЂРІРµСЂ Р»РѕР¶РёС‚СЊСЃСЏ СЃРїР°С‚СЊ!\n";
 	while (s_ServerMain.fd_count > 0)
 	{
-		SOCKET sockNew = s_ServerMain.fd_array[0]; // получаем нмоера сокета
+		SOCKET sockNew = s_ServerMain.fd_array[0]; // РїРѕР»СѓС‡Р°РµРј РЅРјРѕРµСЂР° СЃРѕРєРµС‚Р°
 		//send(sockNew, goodByeMSG.c_str(), goodByeMSG.size() + 1, 0);
 		FD_CLR(sockNew, &s_ServerMain);
 		closesocket(sockNew);
